@@ -20,7 +20,7 @@ export default function PurchaseScreen() {
 
   return (
     <div className="flex min-h-full w-full flex-col bg-white">
-      <MobilePageHeader title="매입" />
+      <MobilePageHeader title="매입" onBack={() => {}} />
 
       <main className="flex-1 px-5 pb-28 pt-6 space-y-8">
         {/* 상품 요약 */}
