@@ -10,7 +10,7 @@ export default function AssetsScreen() {
     <div className="flex min-h-full w-full flex-col bg-white">
       <MobilePageHeader title="내 자산" onBack={() => navigate("/purchase/complete")} />
 
-      <main className="flex-1 px-5 pb-28 pt-6 space-y-8">
+      <main className="flex-1 px-5 pb-24 pt-6 space-y-6">
         {/* 총 자산 요약 */}
         <section className="space-y-3 rounded-[12px] bg-white px-4 py-4 shadow-[0_4px_18px_rgba(17,17,17,0.04)]">
           <div className="flex items-center justify-between">
@@ -21,12 +21,39 @@ export default function AssetsScreen() {
                   ?
                 </span>
               </p>
-              <p className="mt-1 text-[26px] font-bold tracking-[-0.13px] text-[#111111]">
-                1,002,252,813
-              </p>
+              <div className="mt-1 flex items-center gap-2">
+                <p className="text-[26px] font-bold tracking-[-0.13px] text-[#111111]">
+                  1,002,252,813
+                </p>
+                <button
+                  type="button"
+                  className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#f4f6f9]"
+                  aria-label="총 자산 새로고침"
+                >
+                  <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M4 10a6 6 0 0 1 9.5-4.5M14 4v3.5H10.5"
+                      stroke="#999EA4"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M16 10a6 6 0 0 1-9.5 4.5M6 16v-3.5H9.5"
+                      stroke="#999EA4"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
-          <p className="text-[14px] text-[#fa2d42]">2,252,813원 (+0.23%)</p>
+          <div className="flex items-center gap-1 text-[14px] text-[#fa2d42]">
+            <TriangleUpIcon />
+            <span>2,252,813원 (+0.23%)</span>
+          </div>
           <p className="text-[12px] text-[#999ea4]">2025.11.16 15:30 기준</p>
         </section>
 
@@ -35,7 +62,7 @@ export default function AssetsScreen() {
           <h2 className="text-[18px] font-bold text-[#111111]">신한개인용MMF제2호</h2>
 
           <div className="space-y-3">
-            <InfoRow label="보유 수량" value="1,002,252,813 sMMF" />
+            <InfoRow label="보유 수량" value="1,002,252,813 sMMF" valueClassName="text-[#3e4ff9]" />
             <InfoRow label="평가 금액" value="1,002,252,813 원" />
             <InfoRow label="매입 원금" value="1,000,000,000 원" />
             <div className="h-px bg-[#eeeeee]" />
@@ -64,7 +91,10 @@ export default function AssetsScreen() {
             <HistoryRow date="2025.11.13" value="+500,500 원 (+0.05%)" />
           </div>
 
-          <button type="button" className="pt-1 text-[12px] text-[#777e8c] underline">
+          <button
+            type="button"
+            className="pt-1 w-full text-center text-[12px] text-[#777e8c] underline"
+          >
             더 보기
           </button>
         </section>
@@ -121,5 +151,13 @@ function HistoryRow({ date, value }: HistoryRowProps) {
       <span className="text-[#777e8c]">{date}</span>
       <span className="text-[#ff3b30]">{value}</span>
     </div>
+  );
+}
+
+function TriangleUpIcon() {
+  return (
+    <svg className="h-2.5 w-2.5" viewBox="0 0 10 10" fill="none">
+      <path d="M5 2L9 8H1L5 2Z" fill="#FA2D42" />
+    </svg>
   );
 }

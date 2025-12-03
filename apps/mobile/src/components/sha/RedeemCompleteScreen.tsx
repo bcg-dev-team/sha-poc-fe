@@ -14,7 +14,7 @@ export default function RedeemCompleteScreen() {
     <div className="flex min-h-full w-full flex-col bg-white">
       <MobilePageHeader title="sMMF 환매" onBack={() => navigate("/redeem")} />
 
-      <main className="flex-1 px-5 pb-28 pt-8 space-y-8">
+      <main className="flex-1 px-5 pb-24 pt-6 space-y-6">
         {/* 완료 아이콘 + 메시지 */}
         <section className="flex flex-col items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#2a3fec]">
@@ -61,7 +61,7 @@ export default function RedeemCompleteScreen() {
 
           <div className="space-y-3">
             <h3 className="text-[14px] font-bold text-[#111111]">블록체인 정보</h3>
-            <div className="rounded-[8px] bg-[#f7f7f7] px-4 py-3 text-[12px] text-[#77738c]">
+            <div className="rounded-[8px] bg-[#f7f7f7] px-4 py-3 text-[12px] text-[#77738c] break-all">
               0x742d35Cc1234567890abcdef1234567890AbCdEf
             </div>
           </div>

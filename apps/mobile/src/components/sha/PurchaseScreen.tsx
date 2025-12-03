@@ -9,8 +9,11 @@ export default function PurchaseScreen() {
   const [amount, setAmount] = useState("1000000000");
   const [mode, setMode] = useState<"direct" | "max">("direct");
 
+  const numericAmount = Number(amount || "0") || 0;
+  const formattedAmount = numericAmount.toLocaleString("ko-KR");
+
   const handleComplete = () => {
-    navigate("/purchase/complete");
+    navigate("/purchase/complete", { state: { amount: numericAmount } });
   };
 
   const handleQuickAmount = (value: string) => {
@@ -22,7 +25,7 @@ export default function PurchaseScreen() {
     <div className="flex min-h-full w-full flex-col bg-white">
       <MobilePageHeader title="매입" onBack={() => {}} />
 
-      <main className="flex-1 px-5 pb-28 pt-6 space-y-8">
+      <main className="flex-1 px-5 pb-24 pt-4 space-y-6">
         {/* 상품 요약 */}
         <section className="space-y-3">
           <h1 className="text-[18px] font-bold leading-[26px] text-[#111111]">신한개인용MMF제2호</h1>
@@ -86,15 +89,17 @@ export default function PurchaseScreen() {
             <div className="flex items-center justify-between rounded-md border-b border-[#f4f4f4] pb-1">
               <Input
                 type="text"
-                value={amount}
-                onChange={(event) => setAmount(event.target.value)}
-                className="border-none px-0 text-right text-[16px] font-medium text-[#111111] shadow-none focus-visible:ring-0"
+                inputMode="numeric"
+                value={amount ? formattedAmount : ""}
+                onChange={(event) => {
+                  const digitsOnly = event.target.value.replace(/[^0-9]/g, "");
+                  setAmount(digitsOnly);
+                }}
+                className="border-none px-0 text-left text-[16px] font-medium text-[#111111] shadow-none focus-visible:ring-0"
               />
               <div className="ml-3 flex items-center gap-3">
                 <span className="text-[14px] text-[#111111]">원</span>
-                <button type="button" className="text-[11px] text-[#aaaeb3]">
-                  지우기
-                </button>
+                <ClearButton onClick={() => setAmount("")} />
               </div>
             </div>
             <p className="text-[12px] text-[#aaaeb3]">보유 sKRW: 1,250,000,000 원</p>
@@ -139,7 +144,7 @@ export default function PurchaseScreen() {
           <div className="space-y-2">
             <h3 className="text-[15px] font-bold text-[#111111]">sKRW → KRW 환전 정보</h3>
             <div className="h-px bg-[#eeeeee]" />
-            <InfoRow label="환전 금액" value="1,000,000,000 원" />
+            <InfoRow label="환전 금액" value={`${formattedAmount} 원`} />
             <InfoRow label="예상 처리 시간" value="약 3~5분" />
             <p className="mt-1 text-[11px] text-[#999999]">* PoC 환전 수수료 없음</p>
           </div>
@@ -147,10 +152,8 @@ export default function PurchaseScreen() {
           <div className="space-y-2">
             <h3 className="text-[15px] font-bold text-[#111111]">토큰 발행 안내</h3>
             <div className="h-px bg-[#eeeeee]" />
-            <InfoRow label="예상 발행 토큰" value="1,000,000,000 sMMF" />
+            <InfoRow label="예상 발행 토큰" value={`${formattedAmount} sMMF`} />
             <InfoRow label="발행 예정일" value="2025.11.17 (익일)" />
-            <InfoRow label="발행 시간" value="오전 9:00 (예정)" />
-            <p className="mt-1 text-[11px] text-[#999999]">* NAV 업데이트와 동시 발행</p>
           </div>
         </section>
       </main>
@@ -181,6 +184,27 @@ function InfoRow({ label, value }: InfoRowProps) {
       <span className="text-[#777e8c]">{label}</span>
       <span className="text-[14px] text-[#333950]">{value}</span>
     </div>
+  );
+}
+
+function ClearButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="입력 값 지우기"
+      className="flex h-5 w-5 items-center justify-center"
+    >
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="8" fill="#CCCFD3" />
+        <path
+          d="M5.5 5.5L10.5 10.5M10.5 5.5L5.5 10.5"
+          stroke="white"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+      </svg>
+    </button>
   );
 }
 

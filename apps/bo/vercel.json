@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd ../.. && pnpm --filter @template/bo build",
+  "outputDirectory": "apps/bo/dist",
+  "installCommand": "pnpm install",
+  "framework": "vite"
+}
+

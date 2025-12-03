@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd ../.. && pnpm --filter @template/fm build",
+  "outputDirectory": "apps/fm/dist",
+  "installCommand": "pnpm install",
+  "framework": "vite"
+}
+

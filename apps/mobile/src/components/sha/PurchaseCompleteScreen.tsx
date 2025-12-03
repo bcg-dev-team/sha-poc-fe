@@ -1,10 +1,15 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@digital-wallet/ui";
 import MobileStickyFooter from "../layout/MobileStickyFooter";
 import MobilePageHeader from "../ui/MobilePageHeader";
 
 export default function PurchaseCompleteScreen() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const state = location.state as { amount?: number } | null;
+  const amount = typeof state?.amount === "number" && !Number.isNaN(state.amount) ? state.amount : 1_000_000_000;
+  const formattedAmount = amount.toLocaleString("ko-KR");
 
   const handleNavigateAssets = () => {
     navigate("/assets");
@@ -14,7 +19,7 @@ export default function PurchaseCompleteScreen() {
     <div className="flex min-h-full w-full flex-col bg-white">
       <MobilePageHeader title="매입" onBack={() => navigate("/purchase")} />
 
-      <main className="flex-1 px-5 pb-28 pt-8 space-y-8">
+      <main className="flex-1 px-5 pb-24 pt-6 space-y-6">
         {/* 완료 아이콘 + 메시지 */}
         <section className="flex flex-col items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#2a3fec]">
@@ -40,7 +45,7 @@ export default function PurchaseCompleteScreen() {
           <div className="h-px bg-[#eeeeee]" />
 
           <div className="space-y-2">
-            <InfoRow label="매입 금액" value="1,000,000,000 원" />
+            <InfoRow label="매입 금액" value={`${formattedAmount} 원`} />
             <p className="text-[11px] text-[#999999]">* PoC 환전 수수료 없음</p>
           </div>
         </section>
@@ -49,10 +54,17 @@ export default function PurchaseCompleteScreen() {
         <section className="space-y-6 rounded-[12px] border border-[#ebedf5] bg-white px-4 py-4 shadow-sm">
           <h2 className="text-[14px] font-bold text-[#111111]">토큰 발행 안내</h2>
           <div className="space-y-2">
-            <InfoRow label="발행 예정 토큰" value="1,000,000,000 sMMF" />
+            <InfoRow label="발행 예정 토큰" value={`${formattedAmount} sMMF`} />
             <InfoRow label="발행 예정일" value="2025.11.17 (익일)" />
-            <InfoRow label="발행 시간" value="오전 9:00 (예정)" />
-            <p className="text-[11px] text-[#999999]">* NAV 업데이트와 동시 발행</p>
+            <p className="text-[11px] text-[#999999]">* PoC 환전 수수료 없음</p>
+          </div>
+        </section>
+
+        {/* 블록체인 정보 */}
+        <section className="space-y-3 rounded-[12px] border border-[#ebedf5] bg-white px-4 py-4 shadow-sm">
+          <h2 className="text-[14px] font-bold text-[#111111]">블록체인 정보</h2>
+          <div className="rounded-[8px] bg-[#f7f7f7] px-4 py-3 text-[12px] text-[#77738c] break-all">
+            0x742d35Cc1234567890abcdef1234567890AbCdEf
           </div>
         </section>
       </main>
