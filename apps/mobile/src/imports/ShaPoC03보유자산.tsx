@@ -527,7 +527,10 @@ function Frame31() {
 
 function ContentsFooter() {
   return (
-    <div className="absolute box-border content-stretch flex flex-col h-[753px] items-start left-0 overflow-x-clip overflow-y-auto pb-0 pt-[52px] px-0 top-0 w-[360px]" data-name="contents+footer">
+    <div
+      className="absolute box-border content-stretch flex flex-col h-[753px] items-start left-0 overflow-x-clip pb-0 pt-[52px] px-0 top-0 w-[360px]"
+      data-name="contents+footer"
+    >
       <Frame31 />
     </div>
   );

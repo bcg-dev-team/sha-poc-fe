@@ -477,14 +477,22 @@ function BtnMainN({ onClick }: { onClick: () => void }) {
 
 function Btn({ onClick }: { onClick: () => void }) {
   return (
-    <div className="fixed bottom-0 left-0 w-[360px] z-50" data-name="+ BTN">
+    <div className="absolute bottom-0 left-0 w-[360px] z-50" data-name="+ BTN">
       <Img00ComBtnbg360Bg />
       <BtnMainN onClick={onClick} />
     </div>
   );
 }
 
-export default function ShaPoC({ onBack, onConfirm }: { onBack?: () => void; onConfirm?: () => void }) {
+export default function ShaPoC({
+  onBack,
+  onConfirm,
+  hideInlineButton = false,
+}: {
+  onBack?: () => void;
+  onConfirm?: () => void;
+  hideInlineButton?: boolean;
+}) {
   const handleBack = () => {
     if (onBack) {
       onBack();
@@ -503,7 +511,7 @@ export default function ShaPoC({ onBack, onConfirm }: { onBack?: () => void; onC
       <div className="absolute bottom-0 left-0 pointer-events-none top-0">
         <Frame9 onBack={handleBack} />
       </div>
-      <Btn onClick={handleConfirm} />
+      {!hideInlineButton && <Btn onClick={handleConfirm} />}
     </div>
   );
 }

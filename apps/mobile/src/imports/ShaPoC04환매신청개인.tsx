@@ -555,14 +555,22 @@ function BtnMainN({ onClick }: { onClick: () => void }) {
 
 function Btn({ onClick }: { onClick: () => void }) {
   return (
-    <div className="fixed bottom-0 left-0 w-[360px] z-50" data-name="+ BTN">
+    <div className="absolute bottom-0 left-0 w-[360px] z-50" data-name="+ BTN">
       <Img00ComBtnbg360Bg />
       <BtnMainN onClick={onClick} />
     </div>
   );
 }
 
-export default function ShaPoC({ onBack, onRedeemComplete }: { onBack?: () => void; onRedeemComplete?: () => void }) {
+export default function ShaPoC({
+  onBack,
+  onRedeemComplete,
+  hideInlineButton = false,
+}: {
+  onBack?: () => void;
+  onRedeemComplete?: () => void;
+  hideInlineButton?: boolean;
+}) {
   const handleBack = () => {
     if (onBack) {
       onBack();
@@ -582,7 +590,7 @@ export default function ShaPoC({ onBack, onRedeemComplete }: { onBack?: () => vo
     <div className="bg-white relative size-full" data-name="SHA-PoC-04.환매신청-개인">
       <Header onBack={handleBack} />
       <Frame29 isDirectInput={isDirectInput} onToggle={toggleDirectInput} />
-      <Btn onClick={handleRedeemComplete} />
+      {!hideInlineButton && <Btn onClick={handleRedeemComplete} />}
     </div>
   );
 }

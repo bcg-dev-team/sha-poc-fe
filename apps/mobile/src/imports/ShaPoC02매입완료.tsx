@@ -461,7 +461,7 @@ function BtnMainN({ onClick }: { onClick: () => void }) {
 
 function Btn({ onClick }: { onClick: () => void }) {
   return (
-    <div className="fixed bottom-0 left-0 w-[360px] z-50" data-name="+ BTN">
+    <div className="absolute bottom-0 left-0 w-[360px] z-50" data-name="+ BTN">
       <div className="relative w-full">
         <Img00ComBtnbg360Bg />
         <BtnMainN onClick={onClick} />
@@ -470,7 +470,15 @@ function Btn({ onClick }: { onClick: () => void }) {
   );
 }
 
-export default function ShaPoC({ onBack, onNavigateAssets }: { onBack?: () => void; onNavigateAssets?: () => void }) {
+export default function ShaPoC({
+  onBack,
+  onNavigateAssets,
+  hideInlineButton = false,
+}: {
+  onBack?: () => void;
+  onNavigateAssets?: () => void;
+  hideInlineButton?: boolean;
+}) {
   const handleBack = () => {
     if (onBack) {
       onBack();
@@ -485,7 +493,7 @@ export default function ShaPoC({ onBack, onNavigateAssets }: { onBack?: () => vo
 
   return (
     <div className="bg-white relative size-full" data-name="SHA-PoC-02.매입완료">
-      <Btn onClick={handleNavigateAssets} />
+      {!hideInlineButton && <Btn onClick={handleNavigateAssets} />}
       <Frame20 />
       <div className="absolute bottom-0 left-0 pointer-events-none top-0 z-40">
         <Frame9 onBack={handleBack} />

@@ -659,7 +659,7 @@ function BtnMainN({ onClick }: { onClick: () => void }) {
 
 function Btn({ onClick }: { onClick: () => void }) {
   return (
-    <div className="fixed bottom-0 left-0 w-[360px] z-50" data-name="+ BTN">
+    <div className="absolute bottom-0 left-0 w-[360px] z-50" data-name="+ BTN">
       <div className="relative w-full">
         <Img00ComBtnbg360Bg />
         <BtnMainN onClick={onClick} />
@@ -668,7 +668,13 @@ function Btn({ onClick }: { onClick: () => void }) {
   );
 }
 
-export default function ShaPoC({ onComplete }: { onComplete?: () => void }) {
+export default function ShaPoC({
+  onComplete,
+  hideInlineButton = false,
+}: {
+  onComplete?: () => void;
+  hideInlineButton?: boolean;
+}) {
   const handlePurchase = () => {
     if (onComplete) {
       onComplete();
@@ -677,7 +683,7 @@ export default function ShaPoC({ onComplete }: { onComplete?: () => void }) {
 
   return (
     <div className="bg-white relative size-full" data-name="SHA-PoC-01.매입신청">
-      <Btn onClick={handlePurchase} />
+      {!hideInlineButton && <Btn onClick={handlePurchase} />}
       <Frame16 />
       <div className="absolute bottom-0 left-0 pointer-events-none top-0 z-40">
         <Frame8 />
