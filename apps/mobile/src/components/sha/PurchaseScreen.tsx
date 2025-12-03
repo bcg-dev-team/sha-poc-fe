@@ -10,7 +10,7 @@ export default function PurchaseScreen() {
   const [mode, setMode] = useState<"direct" | "max">("direct");
 
   const handleComplete = () => {
-    navigate("/purchase-complete");
+    navigate("/purchase/complete");
   };
 
   const handleQuickAmount = (value: string) => {

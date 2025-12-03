@@ -8,7 +8,7 @@ export default function AssetsScreen() {
 
   return (
     <div className="flex min-h-full w-full flex-col bg-white">
-      <MobilePageHeader title="내 자산" onBack={() => navigate("/purchase-complete")} />
+      <MobilePageHeader title="내 자산" onBack={() => navigate("/purchase/complete")} />
 
       <main className="flex-1 px-5 pb-28 pt-6 space-y-8">
         {/* 총 자산 요약 */}
@@ -70,7 +70,7 @@ export default function AssetsScreen() {
         </section>
       </main>
 
-      <MobileStickyFooter variant="flat">
+      <MobileStickyFooter>
         <div className="flex gap-3">
           <Button
             variant="secondary"

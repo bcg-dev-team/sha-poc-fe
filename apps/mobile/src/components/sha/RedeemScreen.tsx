@@ -10,7 +10,7 @@ export default function RedeemScreen() {
   const [mode, setMode] = useState<"direct" | "max">("direct");
 
   const handleRedeemComplete = () => {
-    navigate("/redeem-complete");
+    navigate("/redeem/complete");
   };
 
   const handleQuickAmount = (value: string) => {
