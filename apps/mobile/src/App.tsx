@@ -3,32 +3,13 @@ import { useEffect, useState } from "react";
 import MobileViewport from "./components/layout/MobileViewport";
 import { useMobileViewportContext } from "./components/layout/MobileViewportContext";
 import { QuickAccessToggle } from "./components/devtools/MobileViewportToggle";
-import MyHomeScreen from "./components/MyHomeScreen";
-import WalletDashboard from "./components/WalletDashboard";
-import WalletWelcome from "./components/WalletWelcome";
-import WalletAssetSelection from "./components/WalletAssetSelection";
-import WalletNetworkSelection from "./components/WalletNetworkSelection";
-import WalletCreationComplete from "./components/WalletCreationComplete";
-import DepositConnectWallet from "./components/DepositConnectWallet";
-import DepositAmountEntry from "./components/DepositAmountEntry";
-import DepositProcessing from "./components/DepositProcessing";
-import DepositCompletion from "./components/DepositCompletion";
-import ExchangeProcessing from "./components/ExchangeProcessing";
-import ExchangeCompletion from "./components/ExchangeCompletion";
-import UsdcWithdrawal from "./components/UsdcWithdrawal";
-import WithdrawalProcessing from "./components/WithdrawalProcessing";
-import WithdrawalCompletion from "./components/WithdrawalCompletion";
-import TransactionHistory from "./components/TransactionHistory";
-import TokenSecuritiesOverview from "./components/TokenSecuritiesOverview";
-import ExplorerView from "./components/ExplorerView";
-import TokenSecuritiesLilac from "./components/TokenSecuritiesLilac";
-import TokenTradingOrder from "./components/TokenTradingOrder";
-import UsdcExchangeFlow from "./components/UsdcExchangeFlow";
 import { ScreenSummaryPanel } from "./components/ScreenSummaryPanel";
-import GlobalMenuScreen from "./components/GlobalMenuScreen";
 
-import { DepositProvider } from "./contexts/DepositContext";
-import { MyWalletProvider } from "./contexts/WalletContext";
+import PurchaseScreen from "./components/sha/PurchaseScreen";
+import PurchaseCompleteScreen from "./components/sha/PurchaseCompleteScreen";
+import AssetsScreen from "./components/sha/AssetsScreen";
+import RedeemScreen from "./components/sha/RedeemScreen";
+import RedeemCompleteScreen from "./components/sha/RedeemCompleteScreen";
 function ScrollToTop() {
   const { pathname } = useLocation();
   const viewportContext = useMobileViewportContext();
@@ -77,58 +58,19 @@ function WorkspaceLayout() {
   );
 }
 
-function DepositLayout() {
-  return (
-    <DepositProvider>
-      <Outlet />
-    </DepositProvider>
-  );
-}
-
-function MyWalletLayout() {
-  return (
-    <MyWalletProvider>
-      <Outlet />
-    </MyWalletProvider>
-  );
-}
-
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<WorkspaceLayout />}>
-
-          <Route element={<MyWalletLayout />}>
-            <Route path="/" element={<MyHomeScreen />} />
-            <Route path="/wallet" element={<WalletDashboard />} />
-            <Route path="/wallet/start" element={<WalletWelcome />} />
-            <Route path="/wallet/asset" element={<WalletAssetSelection />} />
-            <Route path="/wallet/network" element={<WalletNetworkSelection />} />
-            <Route path="/wallet/creation-complete" element={<WalletCreationComplete />} />
-            <Route element={<DepositLayout />}>
-              <Route path="/deposit/connect-wallet" element={<DepositConnectWallet />} />
-              <Route path="/deposit/amount" element={<DepositAmountEntry />} />
-              <Route path="/deposit/processing" element={<DepositProcessing />} />
-              <Route path="/deposit/completion" element={<DepositCompletion />} />
-
-              <Route path="/usdc-exchange" element={<UsdcExchangeFlow />} />
-              <Route path="/usdc-exchange/processing" element={<ExchangeProcessing />} />
-              <Route path="/usdc-exchange/completion" element={<ExchangeCompletion />} />
-              <Route path="/withdrawal" element={<UsdcWithdrawal />} />
-              <Route path="/withdrawal/processing" element={<WithdrawalProcessing />} />
-              <Route path="/withdrawal/completion" element={<WithdrawalCompletion />} />
-              <Route path="/transaction-history" element={<TransactionHistory />} />
-              <Route path="/explorer/tx/:txid" element={<ExplorerView />} />
-              <Route path="/token-securities" element={<TokenSecuritiesOverview />} />
-              <Route path="/token-securities/lilac" element={<TokenSecuritiesLilac />} />
-              <Route path="/token-securities/lilac/trade" element={<TokenTradingOrder />} />
-              <Route path="/menu" element={<GlobalMenuScreen />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Route>
-          </Route>
+          <Route path="/" element={<Navigate to="/purchase" replace />} />
+          <Route path="/purchase" element={<PurchaseScreen />} />
+          <Route path="/purchase/complete" element={<PurchaseCompleteScreen />} />
+          <Route path="/assets" element={<AssetsScreen />} />
+          <Route path="/redeem" element={<RedeemScreen />} />
+          <Route path="/redeem/complete" element={<RedeemCompleteScreen />} />
+          <Route path="*" element={<Navigate to="/purchase" replace />} />
         </Route>
-
       </Routes>
     </BrowserRouter>
   );

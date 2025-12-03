@@ -13,23 +13,54 @@ interface Section {
 
 const SECTIONS: Section[] = [
   {
-    title: "매입 플로우",
+    title: "MY홈 & 메뉴",
     items: [
-      { label: "1단계: 매입 신청", path: "/purchase", description: "sKRW → 토큰 매입 신청" },
-      { label: "2단계: 매입 완료", path: "/purchase/complete", description: "매입 결과 및 요약" },
+      { label: "MY홈", path: "/", description: "앱의 기본 랜딩 화면" },
+      { label: "전체 메뉴", path: "/menu", description: "전역 메뉴 모음" },
     ],
   },
   {
-    title: "보유 자산",
+    title: "지갑 온보딩",
     items: [
-      { label: "보유 자산 요약", path: "/assets", description: "보유 sMMF 및 수익 현황" },
+      { label: "지갑 시작", path: "/wallet/start", description: "온보딩 시작 화면" },
+      { label: "자산 선택", path: "/wallet/asset" },
+      { label: "네트워크 선택", path: "/wallet/network" },
+      { label: "지갑 생성 완료", path: "/wallet/creation-complete" },
     ],
   },
   {
-    title: "환매 플로우",
+    title: "USDC 입금 플로우",
     items: [
-      { label: "1단계: 환매 신청", path: "/redeem", description: "보유 sMMF 환매 요청" },
-      { label: "2단계: 환매 완료", path: "/redeem/complete", description: "환매 결과 및 입금 정보" },
+      { label: "1단계: MetaMask 연결", path: "/deposit/connect-wallet" },
+      { label: "2단계: 금액 입력", path: "/deposit/amount" },
+      { label: "3단계: 입금 진행 중", path: "/deposit/processing" },
+      { label: "4단계: 입금 완료", path: "/deposit/completion" },
+    ],
+  },
+  {
+    title: "USDC 출금 플로우",
+    items: [
+      { label: "지갑 대시보드", path: "/wallet", description: "자산 요약" },
+      { label: "USDC 출금", path: "/withdrawal" },
+      { label: "출금 진행 중", path: "/withdrawal/processing" },
+      { label: "출금 완료", path: "/withdrawal/completion" },
+    ],
+  },
+  {
+    title: "USDC 환전",
+    items: [
+      { label: "USDC 환전", path: "/usdc-exchange" },
+      { label: "환전 진행 중", path: "/usdc-exchange/processing" },
+      { label: "환전 완료", path: "/usdc-exchange/completion" },
+      { label: "디지털자산거래내역", path: "/transaction-history" },
+    ],
+  },
+  {
+    title: "토큰 증권 & 거래",
+    items: [
+      { label: "토큰 증권 메인", path: "/token-securities", description: "인기/관심/보유" },
+      { label: "라일락(LILAC) 상세", path: "/token-securities/lilac" },
+      { label: "라일락 매수 주문", path: "/token-securities/lilac/trade" },
     ],
   },
 ];
@@ -38,7 +69,9 @@ export function ScreenSummaryPanel() {
   return (
     <aside className="flex h-screen w-[420px] flex-col gap-4 overflow-y-auto border-r border-[#d9dde6] bg-white/95 px-6 py-8">
       <header>
-        <p className="text-xs font-semibold uppercase tracking-wide text-[#2a3fec]">SHA PoC Mobile</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-[#2a3fec]">
+          SOL 디지털 월렛
+        </p>
         <h1 className="mt-2 text-2xl font-bold text-[#111111]">Quick Access</h1>
         <p className="mt-2 text-sm text-[#777e8c]">
           원하는 화면 선택 시 우측 모바일 영역에 해당 화면이 표시됩니다.
