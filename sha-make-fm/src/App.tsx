@@ -1,6 +1,7 @@
 import svgPaths from "./imports/svg-fodi3oah1h";
 import { useState } from "react";
 import TokenIssuance from "./pages/TokenIssuance";
+import { MyWalletProvider } from "./contexts/WalletContext";
 
 function Text() {
   return (
@@ -1057,10 +1058,12 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState<'nav' | 'token'>('nav');
 
   return (
-    <div className="bg-gray-100 relative size-full" data-name="SHA-PoC-10.NAV업데이트">
-      {currentPage === 'nav' ? <AppContent /> : <TokenIssuance />}
-      <Sidebar onNavClick={() => setCurrentPage('nav')} onTokenClick={() => setCurrentPage('token')} />
-      <Header />
-    </div>
+    <MyWalletProvider>
+      <div className="bg-gray-100 relative size-full" data-name="SHA-PoC-10.NAV업데이트">
+        {currentPage === 'nav' ? <AppContent /> : <TokenIssuance />}
+        <Sidebar onNavClick={() => setCurrentPage('nav')} onTokenClick={() => setCurrentPage('token')} />
+        <Header />
+      </div>
+    </MyWalletProvider>
   );
 }
