@@ -163,9 +163,15 @@ export default function TokenIssuance() {
                 <div aria-hidden="true" className="absolute border-[0px_0px_1px] border-gray-200 border-solid inset-0 pointer-events-none" />
                 <div className="size-full">
                   <div className="box-border content-stretch flex flex-col items-start pb-px pt-[24px] px-[24px] relative w-full">
-                    <div className="h-[27px] relative shrink-0 w-full" data-name="Heading 3">
+                    {/* <div className="h-[27px] relative shrink-0 w-full" data-name="Heading 3">
                       <p className="absolute font-['Pretendard_GOV:Medium',sans-serif] leading-[27px] left-0 not-italic text-[#1e2939] text-nowrap top-[-0.5px] whitespace-pre">발행 대기 목록</p>
-                    </div>
+                    </div> */}
+
+                    <div className="mb-[8px] h-[37px] ">
+                    <p className="font-['Pretendard_GOV',sans-serif] font-semibold text-[16px] leading-[24px] text-[#1e2939]">
+                      발행 대기 목록
+                    </p>
+            </div>
                   </div>
                 </div>
               </div>
@@ -173,8 +179,8 @@ export default function TokenIssuance() {
               {/* Container10 - Header Row */}
               <div className="relative shrink-0 w-full h-[56.5px] bg-gray-100" data-name="Container">
                 <div className="absolute h-[56.5px] left-0 top-0 w-[1374px]" data-name="Table Row">
-                  <div aria-hidden="true" className="absolute border-[0px_0px_1px] border-gray-100 border-solid inset-0 pointer-events-none" />
-                  <div className="absolute h-[56.5px] left-0 top-0 w-[273.188px]" data-name="Header Cell">
+                  <div aria-hidden="true" className="absolute border-b border-gray-200 inset-0 pointer-events-none" />
+                  <div className="absolute h-[56.5px] left-0 top-0 w-[273.188px] " data-name="Header Cell">
                     <p className="absolute font-['Pretendard_GOV:Bold',sans-serif] leading-[24px] left-[24px] not-italic text-[#4a5565] text-nowrap top-[15.5px] whitespace-pre">거래번호</p>
                   </div>
                   <div className="absolute h-[56.5px] left-[273.19px] top-0 w-[212.633px]" data-name="Header Cell">
@@ -199,7 +205,7 @@ export default function TokenIssuance() {
               {mockData.map((item, index) => (
                 <div key={index} className="relative shrink-0 w-full h-[69px]" data-name="Container">
                   <div className="absolute h-[69px] left-0 top-0 w-[1374px]" data-name="Table Row">
-                    <div aria-hidden="true" className="absolute border-[0px_0px_1px] border-gray-100 border-solid inset-0 pointer-events-none" />
+                    <div aria-hidden="true" className="absolute border-b border-gray-200 inset-0 pointer-events-none" />
                     <div className="absolute h-[69px] left-0 top-0 w-[273.188px]" data-name="Data Cell">
                       <p className="absolute font-['Pretendard_GOV:Regular',sans-serif] leading-[24px] left-[24px] not-italic text-[#1e2939] text-nowrap top-[22px] whitespace-pre">{item.id}</p>
                     </div>
@@ -294,7 +300,7 @@ export default function TokenIssuance() {
                 </div>
 
                 {/* Container17 - Action Button */}
-                <div className="basis-0 box-border content-stretch flex flex-col gap-[24px] grow items-center justify-center min-h-px min-w-px px-px py-[26px] relative rounded-[10px] self-stretch shrink-0" data-name="Container">
+                <div className="basis-0 box-border content-stretch flex flex-col gap-[24px] grow items-center justify-center min-h-px min-w-px px-px py-[26px] relative rounded-[10px] self-stretch shrink-0 bg-[#f0fdf4]" data-name="Container">
                   <div aria-hidden="true" className="absolute border border-[#b9f8cf] border-solid inset-0 pointer-events-none rounded-[10px]" />
                   <div className="relative shrink-0">
                     <div className="bg-clip-padding border-0 border-[transparent] border-solid box-border content-stretch flex flex-col gap-[15px] items-center relative">
