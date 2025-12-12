@@ -12,7 +12,7 @@ const PULSE_RPC_URL = "https://secuchain.testnet.stopulse.co.kr/";
 
 // Pulse
 export const SMMF_CONTRACT_ADDRESS =
-  "0x8FFe39e8b5aa82B07A2Da8CD02b497A379D82982"; // sMMF 주소
+  "0x793FCF9C06e126c00BfD3dF4DF2D237C0cCe8c83"; // sMMF 주소
 export const SKRW_CONTRACT_ADDRESS =
   "0xaBba758C39BE3f4751Cf13F562E2dD6955648670";
 
@@ -46,6 +46,11 @@ const MMF_ABI = [
   "function sharesOf(address account) view returns (uint256)",
   "function getSharesByTokenAmount(uint256 tokenAmount) view returns (uint256)",
   "function getTokenAmountByShares(uint256 shareAmount) view returns (uint256)",
+
+  "function getActualValue(address account) view returns (uint256)",
+  "function calculateRedemptionAmount(uint256 tokenAmount) view returns (uint256)",
+  "function principalOf(address account) view returns (uint256)",
+  "function profitOf(address account) view returns (uint256)",
 ];
 
 export const SOL_ADDRESS = "0x8DFeB78ecEe391149b1c2739cEd0f6992D0a5663";
@@ -80,8 +85,9 @@ export class MyWallet {
   balance: number = 0;
 
   // 기본유저
-  smmf_balance: number = 0;
-  smmf_shares: number = 0;
+  smmf_balance: number = 0; //원금
+  smmf_shares: number = 0; // 펀드가치
+
   smmf_decimals: number = 0;
   skrw_balance: number = 0;
   skrw_decimals: number = 0;
@@ -161,11 +167,6 @@ export class MyWallet {
   }
 
   async burnMMF(wallet: Wallet): Promise<TransactionResponse | null> {
-    // const MMF_ABI = [
-    //   "function balanceOf(address owner) view returns (uint256)",
-    //   "function decimals() view returns (uint8)",
-    //   "function transfer(address to, uint256 amount) returns (bool)",
-    // ];
     const contract = new ethers.Contract(
       SMMF_CONTRACT_ADDRESS,
       MMF_ABI,
@@ -197,20 +198,6 @@ export class MyWallet {
     wallet: Wallet,
     amount: string
   ): Promise<TransactionResponse | null> {
-    // MMF 컨트랙트 Inline ABI
-    // const MMF_ABI = [
-    //   "function name() view returns (string)",
-    //   "function symbol() view returns (string)",
-    //   "function totalSupply() view returns (uint256)",
-    //   "function currentNAV() view returns (uint256)",
-    //   "function hasRole(bytes32 role, address account) view returns (bool)",
-    //   "function paused() view returns (bool)",
-    //   "function purchaseWithDT(address buyer, uint256 dtAmount) returns (uint256)",
-    //   "function balanceOf(address account) view returns (uint256)",
-    //   "function lockupUntil(address) view returns (uint256)",
-    //   "function getPendingPurchaseCount(address user) view returns (uint256)",
-    // ];
-
     // Admin 권한이 있는 지갑 사용
     const contract = new ethers.Contract(
       SMMF_CONTRACT_ADDRESS,
@@ -356,12 +343,19 @@ export class MyWallet {
   }
 
   async resync(): Promise<void> {
-    this.smmf_balance = Number(
-      await this.getERC20Balance(
-        SMMF_CONTRACT_ADDRESS,
-        this.provider,
-        this.wallet
-      )
+    // this.smmf_balance = Number(
+    //   await this.getERC20Balance(
+    //     SMMF_CONTRACT_ADDRESS,
+    //     this.provider,
+    //     this.wallet
+    //   )
+    // );
+
+    this.smmf_balance = Number(await this.getMMFPrincipal(this.wallet));
+    this.smmf_shares = Number(await this.getMMFShare(this.wallet));
+
+    console.log(
+      `원금 = : ${this.smmf_balance}, 펀드가치 = : ${this.smmf_shares}`
     );
     this.skrw_balance = Number(
       await this.getERC20Balance(
@@ -401,12 +395,54 @@ export class MyWallet {
     );
   }
 
-  async getMMFShares(wallet: Wallet): Promise<number> {
-    const contract = new ethers.Contract(
-      SMMF_CONTRACT_ADDRESS,
-      MMF_ABI,
-      wallet
-    );
+  async getMMFPrincipal(wallet: Wallet): Promise<string> {
+    try {
+      const contract = new ethers.Contract(
+        SMMF_CONTRACT_ADDRESS,
+        MMF_ABI,
+        this.provider
+      );
+      const [rawBalance, decimals]: [bigint, number] = await Promise.all([
+        contract.principalOf(wallet.address),
+        contract.decimals(),
+      ]);
+      // 사람이 읽을 수 있는 형식으로 변환합니다.
+
+      const balance = ethers.formatUnits(rawBalance, decimals);
+      console.log(
+        `[myWallet] getMMFPrincipal for ${SMMF_CONTRACT_ADDRESS}: ${balance} : ${wallet.address}`
+      );
+
+      return ethers.formatUnits(rawBalance, decimals);
+    } catch (error) {
+      console.error(
+        `[myWallet] Failed to get ERC20 balance for ${SMMF_CONTRACT_ADDRESS}:`,
+        error
+      );
+      return "0.0"; // 오류 발생 시 잔액을 0으로 반환
+    }
+  }
+
+  async getMMFShare(wallet: Wallet): Promise<string> {
+    try {
+      const contract = new ethers.Contract(
+        SMMF_CONTRACT_ADDRESS,
+        MMF_ABI,
+        this.provider
+      );
+      const [rawBalance, decimals]: [bigint, number] = await Promise.all([
+        contract.balanceOf(wallet.address),
+        contract.decimals(),
+      ]);
+      // 사람이 읽을 수 있는 형식으로 변환합니다.
+      return ethers.formatUnits(rawBalance, decimals);
+    } catch (error) {
+      console.error(
+        `[myWallet] Failed to get ERC20 balance for ${SMMF_CONTRACT_ADDRESS}:`,
+        error
+      );
+      return "0.0"; // 오류 발생 시 잔액을 0으로 반환
+    }
   }
   /**
    * 특정 ERC20 토큰의 잔액을 조회합니다.

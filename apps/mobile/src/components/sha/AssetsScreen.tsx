@@ -11,13 +11,26 @@ export default function AssetsScreen() {
   const [mmfValue, setMMFValue] = useState("0");
   const [tokenValue, setTokenValue] = useState("0");
 
+  // useEffect(() => {
+  //   if (isInitialized) {
+  //     // setAmount(wallet.skrw_balance.toString());
+  //     setMMFValue(wallet.smmf_shares.toString());
+  //     setTokenValue(wallet.smmf_balance.toString());
+  //   }
+  // }, [isInitialized, wallet.skrw_balance]);
+
+  // 5초마다 지갑 잔액 체크
   useEffect(() => {
-    if (isInitialized) {
-      // setAmount(wallet.skrw_balance.toString());
-      setMMFValue(wallet.smmf_balance.toString());
-      setTokenValue(wallet.smmf_balance.toString());
-    }
-  }, [isInitialized, wallet.skrw_balance]);
+    if (!isInitialized) return;
+
+    const intervalId = setInterval(async () => {
+      await wallet.resync();
+      setMMFValue(wallet.smmf_balance.toString());  // 원금
+      setTokenValue(wallet.smmf_shares.toString());  // 실제가치
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [isInitialized, wallet]);
 
   return (
     <div className="flex min-h-full w-full flex-col bg-white">
@@ -75,9 +88,9 @@ export default function AssetsScreen() {
           <h2 className="text-[18px] font-bold text-[#111111]">신한개인용MMF제2호</h2>
 
           <div className="space-y-3">
-            <InfoRow label="보유 수량" value="1,002,252,813 sMMF" valueClassName="text-[#3e4ff9]" />
-            <InfoRow label="평가 금액" value="1,002,252,813 원" />
-            <InfoRow label="매입 원금" value="1,000,000,000 원" />
+            <InfoRow label="보유 수량" value={`${Number(tokenValue).toLocaleString()} SMMF` }  valueClassName="text-[#3e4ff9]" />
+            <InfoRow label="평가 금액" value={`${Number(mmfValue).toLocaleString()} 원` } />
+            <InfoRow label="매입 원금" value={`${Number(tokenValue).toLocaleString()} 원` } />
             <div className="h-px bg-[#eeeeee]" />
             <InfoRow label="평가 손익" value="+2,252,813 원" valueClassName="text-[#ff3b30]" />
             <InfoRow label="수익률" value="+0.23%" valueClassName="text-[#ff3b30]" />

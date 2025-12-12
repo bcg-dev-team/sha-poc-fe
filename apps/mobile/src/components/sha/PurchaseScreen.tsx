@@ -54,14 +54,14 @@ export default function PurchaseScreen()  {
 
     const intervalId = setInterval(async () => {
       await wallet.resync();
-      console.log('[PurchaseScreen] SKrw balance updated:', wallet.skrw_balance);
-      console.log('[PurchaseScreen] SMmf balance updated:', wallet.smmf_balance);
+      // console.log('[PurchaseScreen] SKrw balance updated:', wallet.skrw_balance);
+      // console.log('[PurchaseScreen] SMmf balance updated:', wallet.smmf_balance);
 
-      console.log('[PurchaseScreen] SKrw balance2 updated:', wallet.skrw_balance2);
-      console.log('[PurchaseScreen] SMmf balance2 updated:', wallet.smmf_balance2);
+      // console.log('[PurchaseScreen] SKrw balance2 updated:', wallet.skrw_balance2);
+      // console.log('[PurchaseScreen] SMmf balance2 updated:', wallet.smmf_balance2);
 
-      console.log('[PurchaseScreen] SKrw balance3 updated:', wallet.skrw_balance3);
-      console.log('[PurchaseScreen] SMmf balance3 updated:', wallet.smmf_balance3);
+      // console.log('[PurchaseScreen] SKrw balance3 updated:', wallet.skrw_balance3);
+      // console.log('[PurchaseScreen] SMmf balance3 updated:', wallet.smmf_balance3);
       
 
       // amount가 잔액보다 큰지 체크

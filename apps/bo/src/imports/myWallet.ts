@@ -9,17 +9,10 @@ import {
 export const SECUCHAIN_BRIDGE_URL = "https://explorer.testnet.stopulse.co.kr/";
 // Pulse테스트넷 정보
 const PULSE_RPC_URL = "https://secuchain.testnet.stopulse.co.kr/";
-// const PULSE_RPC_URL = "http://localhost:8545";
-
-// localhost
-// export const SMMF_CONTRACT_ADDRESS =
-//   "0x9B8397f1B0FEcD3a1a40CdD5E8221Fa461898517"; // sMMF 주소
-// export const SKRW_CONTRACT_ADDRESS =
-//   "0x2E1f232a9439C3D459FcEca0BeEf13acc8259Dd8";
 
 // Pulse
 export const SMMF_CONTRACT_ADDRESS =
-  "0x8FFe39e8b5aa82B07A2Da8CD02b497A379D82982"; // sMMF 주소
+  "0x793FCF9C06e126c00BfD3dF4DF2D237C0cCe8c83"; // sMMF 주소
 export const SKRW_CONTRACT_ADDRESS =
   "0xaBba758C39BE3f4751Cf13F562E2dD6955648670";
 
@@ -228,7 +221,7 @@ export class MyWallet {
 
       // 최근 블록부터 검색 (최근 10000 블록 범위)
       const currentBlock = await this.provider.getBlockNumber();
-      const fromBlock = Math.max(0, currentBlock - 100);
+      const fromBlock = Math.max(0, currentBlock - 200);
 
       // Transfer 이벤트 필터: to가 BROKER_ADDRESS인 것만
       const filter = contract.filters.Transfer(null, BROKER_ADDRESS);

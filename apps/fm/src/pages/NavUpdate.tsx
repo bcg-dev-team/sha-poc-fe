@@ -1,9 +1,42 @@
 import svgPaths from "../imports/svg-fodi3oah1h";
+import { useMyWallet } from "../contexts/WalletContext";
 
 // sha-make-fm 의 NAV 업데이트 메인 컨텐츠(AppContent 부분)를
 // 레이아웃만 현재 앱 구조에 맞게 조정한 버전
 
 export default function NavUpdate() {
+  const { wallet, isInitialized } = useMyWallet();
+
+  const nav = 1.0002365000;
+
+
+
+  const handleNavUpdate = async () => {
+    if (!isInitialized) {
+      alert("지갑이 초기화되지 않았습니다.");
+      return;
+    }
+
+    try {
+      // NAV 업데이트 로직
+      // 예시: 1.0002365000 를 10000 precision으로 변환하면 10002.365
+      // const newNAV = 10002; // 실제 계산된 NAV 값으로 변경 필요
+      // console.log("[NavUpdate] Updating NAV to:", newNAV);
+
+      // myWallet에 NAV 업데이트 함수가 있다면 호출
+      // await wallet.updateNAVAndRebase(nav);
+
+      const navs = await wallet.parseNAVString(nav);
+      console.log(navs);
+
+
+      alert("NAV 업데이트가 완료되었습니다.");
+    } catch (error) {
+      console.error("[NavUpdate] Error updating NAV:", error);
+      alert("NAV 업데이트 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <div className="box-border flex min-h-[calc(100vh-64px)] flex-col gap-[30px] bg-gray-100 px-[32px] pb-[130px] pt-[32px]">
       {/* 상단 요약 카드 */}
@@ -200,7 +233,10 @@ export default function NavUpdate() {
               산출된 NAV 값을 블록체인에 기록합니다
             </p>
             <div className="flex justify-center">
-              <div className="flex h-[54px] w-[320px] items-center justify-center gap-[8px] rounded-[10px] bg-[#00a63e] text-white shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.1),0px_4px_6px_-4px_rgba(0,0,0,0.1)]">
+              <div
+                className="flex h-[54px] w-[320px] items-center justify-center gap-[8px] rounded-[10px] bg-[#00a63e] text-white shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.1),0px_4px_6px_-4px_rgba(0,0,0,0.1)] cursor-pointer hover:bg-[#009436] transition-colors"
+                onClick={handleNavUpdate}
+              >
                 <span className="text-[15px] font-medium">09:00 NAV 블록체인 등록</span>
               </div>
             </div>

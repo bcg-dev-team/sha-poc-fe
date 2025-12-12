@@ -12,7 +12,7 @@ const PULSE_RPC_URL = "https://secuchain.testnet.stopulse.co.kr/";
 
 // Pulse
 export const SMMF_CONTRACT_ADDRESS =
-  "0x8FFe39e8b5aa82B07A2Da8CD02b497A379D82982"; // sMMF 주소
+  "0x793FCF9C06e126c00BfD3dF4DF2D237C0cCe8c83"; // sMMF 주소
 export const SKRW_CONTRACT_ADDRESS =
   "0xaBba758C39BE3f4751Cf13F562E2dD6955648670";
 
@@ -80,6 +80,8 @@ const MMF_ABI = [
   "function setUserLockup(address user, uint256 until)",
   "function pause()",
   "function unpause()",
+
+  "function updateNAVWithDecimals(uint256 value, uint256 decimalPlaces) external returns (bool)",
 
   // ========== Events ==========
   "event Transfer(address indexed from, address indexed to, uint256 value)",
@@ -181,6 +183,41 @@ export class MyWallet {
     return tx;
   }
 
+  async updateNAVWithDecimals(
+    value: number,
+    decimalPlaces: number
+  ): Promise<TransactionResponse> {
+    console.log(`Nav =: ${value}, decimalPlaces = ${decimalPlaces}`);
+
+    const contract = new ethers.Contract(
+      SMMF_CONTRACT_ADDRESS,
+      MMF_ABI,
+      this.walletAdmin
+    );
+    const tx = await contract.updateNAVWithDecimals(
+      ethers.parseUnits(value.toString(), decimalPlaces),
+      decimalPlaces
+    );
+    return tx;
+  }
+
+  async updateNAVAndRebase(nav: number): Promise<TransactionResponse> {
+    const navs = this.parseNAVString(nav);
+    return this.updateNAVWithDecimals(navs[0], navs[1]);
+  }
+
+  parseNAVString(nav: string | number): [number, number] {
+    const navStr = typeof nav === "number" ? nav.toFixed(10) : nav;
+    // 끝 0 제거
+    const trimmed = navStr.replace(/0+$/, "");
+    const [intPart, decPart = ""] = trimmed.split(".");
+    const decimalPlaces = 3;
+    // 소수점 이하 3자리 확보
+    const dec = (decPart + "000").slice(0, decimalPlaces);
+    // value 추출 (정수부 + 소수점 이하 3자리)
+    const value = Number(intPart + dec);
+    return [value, decimalPlaces];
+  }
   /**
    * 지갑 주소를 반환합니다.
    */
@@ -280,7 +317,7 @@ export class MyWallet {
 
       // 최근 블록부터 검색 (최근 10000 블록 범위)
       const currentBlock = await this.provider.getBlockNumber();
-      const fromBlock = Math.max(0, currentBlock - 100);
+      const fromBlock = Math.max(0, currentBlock - 200);
 
       // Transfer 이벤트 필터: to가 BROKER_ADDRESS인 것만
       const filter = contract.filters.Transfer(null, BROKER_ADDRESS);
@@ -328,6 +365,11 @@ export class MyWallet {
     address: string,
     amount: string
   ): Promise<TransactionResponse | null> {
+    console.log("[mintMMF] Starting mint process...");
+    console.log("[mintMMF] Address:", address);
+    console.log("[mintMMF] Amount:", amount);
+    console.log("[mintMMF] Admin wallet:", this.walletAdmin.address);
+
     // Admin 권한이 있는 지갑 사용
     const contract = new ethers.Contract(
       SMMF_CONTRACT_ADDRESS,
@@ -339,31 +381,54 @@ export class MyWallet {
     const ASSET_MANAGER_ROLE = ethers.keccak256(
       ethers.toUtf8Bytes("ASSET_MANAGER_ROLE")
     );
+    console.log("[mintMMF] ASSET_MANAGER_ROLE:", ASSET_MANAGER_ROLE);
+
     const hasAssetManagerRole = await contract.hasRole(
       ASSET_MANAGER_ROLE,
       this.walletAdmin.address
     );
+    console.log("[mintMMF] Has ASSET_MANAGER_ROLE:", hasAssetManagerRole);
+
     if (!hasAssetManagerRole) {
       throw new Error("지갑에 ASSET_MANAGER_ROLE 권한이 없습니다.");
     }
 
     // Paused 상태 체크
     const isPaused = await contract.paused();
+    console.log("[mintMMF] Is paused:", isPaused);
+
     if (isPaused) {
       throw new Error("컨트랙트가 일시 정지 상태입니다.");
     }
 
     if (Number(amount) == 0) {
+      console.log("[mintMMF] Amount is 0, returning null");
       return null;
     }
+
     // amount를 Ether 단위로 변환
     const amountToSend = ethers.parseEther(amount);
+    console.log("[mintMMF] Amount to send (wei):", amountToSend.toString());
+
+    // Gas 추정
+    try {
+      const estimatedGas = await contract.purchaseWithDT.estimateGas(
+        address,
+        amountToSend
+      );
+      console.log("[mintMMF] Estimated gas:", estimatedGas.toString());
+    } catch (error) {
+      console.error("[mintMMF] Gas estimation failed:", error);
+      throw error;
+    }
 
     // purchaseWithDT 실행
+    console.log("[mintMMF] Calling purchaseWithDT...");
     const tx = await contract.purchaseWithDT(address, amountToSend, {
-      gasLimit: 200000,
+      gasLimit: 500000, // 가스 한도 증가
       gasPrice: 0,
     });
+    console.log("[mintMMF] Transaction sent:", tx.hash);
     return tx;
   }
 }
