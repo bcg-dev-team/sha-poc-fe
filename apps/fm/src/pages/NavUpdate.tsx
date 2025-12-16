@@ -18,17 +18,15 @@ export default function NavUpdate() {
     }
 
     try {
-      // NAV 업데이트 로직
-      // 예시: 1.0002365000 를 10000 precision으로 변환하면 10002.365
-      // const newNAV = 10002; // 실제 계산된 NAV 값으로 변경 필요
-      // console.log("[NavUpdate] Updating NAV to:", newNAV);
 
-      // myWallet에 NAV 업데이트 함수가 있다면 호출
-      // await wallet.updateNAVAndRebase(nav);
+      let tx = await wallet.updateNAVWithDecimals(10002365,7);
 
-      const navs = await wallet.parseNAVString(nav);
-      console.log(navs);
-
+      
+      tx.wait(1);
+      // 0x8DFeB78ecEe391149b1c2739cEd0f6992D0a5663
+      // const balance = await wallet.getMMFShare()
+      // console.log(`balance = : ${balance}`);
+      // const balanceReadable = ethers.formatEther(balance);
 
       alert("NAV 업데이트가 완료되었습니다.");
     } catch (error) {

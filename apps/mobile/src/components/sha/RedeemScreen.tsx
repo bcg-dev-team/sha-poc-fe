@@ -1,11 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input } from "@digital-wallet/ui";
 import MobileStickyFooter from "../layout/MobileStickyFooter";
 import MobilePageHeader from "../ui/MobilePageHeader";
+import { useMyWallet } from "../../contexts/WalletContext";
 
 export default function RedeemScreen() {
   const navigate = useNavigate();
+
+  const { wallet, isInitialized } = useMyWallet();
+  const [mmfValue, setMMFValue] = useState("0");
+  const [tokenValue, setTokenValue] = useState("0");
+
   const HOLDING_AMOUNT = 1_002_252_813;
   const PRINCIPAL_TOTAL = 1_000_000_000;
   const TAX_RATE = 0.154;
@@ -24,6 +30,8 @@ export default function RedeemScreen() {
   const profit = Math.max(redeemAmount - redeemPrincipal, 0);
   const tax = Math.floor(profit * TAX_RATE);
   const netAmount = redeemAmount - tax;
+
+  
 
   const handleRedeemComplete = () => {
     navigate("/redeem/complete");

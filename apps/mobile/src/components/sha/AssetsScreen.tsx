@@ -10,14 +10,9 @@ export default function AssetsScreen() {
   const { wallet, isInitialized } = useMyWallet();
   const [mmfValue, setMMFValue] = useState("0");
   const [tokenValue, setTokenValue] = useState("0");
+  const [profit, setProfit] = useState("0");
+  const [profitRate, setProfitRate] = useState("0");
 
-  // useEffect(() => {
-  //   if (isInitialized) {
-  //     // setAmount(wallet.skrw_balance.toString());
-  //     setMMFValue(wallet.smmf_shares.toString());
-  //     setTokenValue(wallet.smmf_balance.toString());
-  //   }
-  // }, [isInitialized, wallet.skrw_balance]);
 
   // 5초마다 지갑 잔액 체크
   useEffect(() => {
@@ -27,6 +22,11 @@ export default function AssetsScreen() {
       await wallet.resync();
       setMMFValue(wallet.smmf_balance.toString());  // 원금
       setTokenValue(wallet.smmf_shares.toString());  // 실제가치
+
+      setProfit(wallet.profit1);
+      setProfitRate(wallet.profitRate1);
+
+
     }, 5000);
 
     return () => clearInterval(intervalId);
@@ -89,11 +89,11 @@ export default function AssetsScreen() {
 
           <div className="space-y-3">
             <InfoRow label="보유 수량" value={`${Number(tokenValue).toLocaleString()} SMMF` }  valueClassName="text-[#3e4ff9]" />
-            <InfoRow label="평가 금액" value={`${Number(mmfValue).toLocaleString()} 원` } />
-            <InfoRow label="매입 원금" value={`${Number(tokenValue).toLocaleString()} 원` } />
+            <InfoRow label="평가 금액" value={`${Number(tokenValue).toLocaleString()} 원` } />
+            <InfoRow label="매입 원금" value={`${Number(mmfValue).toLocaleString()} 원` } />
             <div className="h-px bg-[#eeeeee]" />
-            <InfoRow label="평가 손익" value="+2,252,813 원" valueClassName="text-[#ff3b30]" />
-            <InfoRow label="수익률" value="+0.23%" valueClassName="text-[#ff3b30]" />
+            <InfoRow label="평가 손익" value={`${Number(profit).toLocaleString()} 원`} valueClassName="text-[#ff3b30]" />
+            <InfoRow label="수익률" value={`${Number(profitRate).toLocaleString()} %`} valueClassName="text-[#ff3b30]" />
             <InfoRow label="보유 기간" value="7일 (2025.11.10부터)" />
           </div>
         </section>

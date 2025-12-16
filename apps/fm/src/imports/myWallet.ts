@@ -12,7 +12,7 @@ const PULSE_RPC_URL = "https://secuchain.testnet.stopulse.co.kr/";
 
 // Pulse
 export const SMMF_CONTRACT_ADDRESS =
-  "0x793FCF9C06e126c00BfD3dF4DF2D237C0cCe8c83"; // sMMF 주소
+  "0xC290e84BE1886a08760b3468D4C3083A36C17a21"; // sMMF 주소
 export const SKRW_CONTRACT_ADDRESS =
   "0xaBba758C39BE3f4751Cf13F562E2dD6955648670";
 
@@ -194,10 +194,7 @@ export class MyWallet {
       MMF_ABI,
       this.walletAdmin
     );
-    const tx = await contract.updateNAVWithDecimals(
-      ethers.parseUnits(value.toString(), decimalPlaces),
-      decimalPlaces
-    );
+    const tx = await contract.updateNAVWithDecimals(value, decimalPlaces);
     return tx;
   }
 
@@ -410,6 +407,12 @@ export class MyWallet {
     const amountToSend = ethers.parseEther(amount);
     console.log("[mintMMF] Amount to send (wei):", amountToSend.toString());
 
+    // await mmfToken.connect(assetManager).purchaseWithDT(
+    //     userA.address,
+    //     ethers.parseEther("1000000000")
+    //   );
+    // });
+
     // Gas 추정
     try {
       const estimatedGas = await contract.purchaseWithDT.estimateGas(
@@ -424,6 +427,9 @@ export class MyWallet {
 
     // purchaseWithDT 실행
     console.log("[mintMMF] Calling purchaseWithDT...");
+    console.log(
+      `MINT MMF : = ${amountToSend.toString()}  , address = : ${address}, amount = ${amount}`
+    );
     const tx = await contract.purchaseWithDT(address, amountToSend, {
       gasLimit: 500000, // 가스 한도 증가
       gasPrice: 0,

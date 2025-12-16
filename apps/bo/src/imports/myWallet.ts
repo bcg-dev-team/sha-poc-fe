@@ -12,7 +12,7 @@ const PULSE_RPC_URL = "https://secuchain.testnet.stopulse.co.kr/";
 
 // Pulse
 export const SMMF_CONTRACT_ADDRESS =
-  "0x793FCF9C06e126c00BfD3dF4DF2D237C0cCe8c83"; // sMMF 주소
+  "0xC290e84BE1886a08760b3468D4C3083A36C17a21"; // sMMF 주소
 export const SKRW_CONTRACT_ADDRESS =
   "0xaBba758C39BE3f4751Cf13F562E2dD6955648670";
 

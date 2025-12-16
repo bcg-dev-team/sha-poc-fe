@@ -12,7 +12,7 @@ const PULSE_RPC_URL = "https://secuchain.testnet.stopulse.co.kr/";
 
 // Pulse
 export const SMMF_CONTRACT_ADDRESS =
-  "0x793FCF9C06e126c00BfD3dF4DF2D237C0cCe8c83"; // sMMF 주소
+  "0xC290e84BE1886a08760b3468D4C3083A36C17a21"; // sMMF 주소
 export const SKRW_CONTRACT_ADDRESS =
   "0xaBba758C39BE3f4751Cf13F562E2dD6955648670";
 
@@ -51,6 +51,10 @@ const MMF_ABI = [
   "function calculateRedemptionAmount(uint256 tokenAmount) view returns (uint256)",
   "function principalOf(address account) view returns (uint256)",
   "function profitOf(address account) view returns (uint256)",
+  "function profitRateOf(address account) view returns (int256)",
+  "function sharesOf(address account) view returns (uint256)",
+  "function updateNAVWithDecimals(uint256 value, uint256 decimalPlaces) external returns (bool)",
+  "function profitRateOf(address account) view returns (int256)",
 ];
 
 export const SOL_ADDRESS = "0x8DFeB78ecEe391149b1c2739cEd0f6992D0a5663";
@@ -88,6 +92,9 @@ export class MyWallet {
   smmf_balance: number = 0; //원금
   smmf_shares: number = 0; // 펀드가치
 
+  profit1: string = "0";
+  profitRate1: string = "0";
+
   smmf_decimals: number = 0;
   skrw_balance: number = 0;
   skrw_decimals: number = 0;
@@ -122,6 +129,11 @@ export class MyWallet {
 
   async initAccount(): Promise<void> {
     await this.resync();
+
+    let tx = await this.updateNAVWithDecimals(1, 0);
+    if (tx) {
+      await tx.wait(1); // 1 confirmations
+    }
 
     await this.initByAccount(this.wallet, USR1_AMOUNT, "0");
     await this.initByAccount(this.wallet2, USR2_AMOUNT, "0");
@@ -342,21 +354,78 @@ export class MyWallet {
     await this.resync();
   }
 
-  async resync(): Promise<void> {
-    // this.smmf_balance = Number(
-    //   await this.getERC20Balance(
-    //     SMMF_CONTRACT_ADDRESS,
-    //     this.provider,
-    //     this.wallet
-    //   )
-    // );
+  async profitRateOf(wallet: Wallet): Promise<string> {
+    const contract = new ethers.Contract(
+      SMMF_CONTRACT_ADDRESS,
+      MMF_ABI,
+      wallet
+    );
+    const profitRate = await contract.profitRateOf(wallet.address);
+    return (Number(profitRate) / 100).toFixed(2);
+  }
+  async profitOf(wallet: Wallet): Promise<string> {
+    const contract = new ethers.Contract(
+      SMMF_CONTRACT_ADDRESS,
+      MMF_ABI,
+      wallet
+    );
 
+    const profit = await contract.profitOf(wallet.address);
+
+    return ethers.formatEther(profit).padEnd(12);
+  }
+
+  async updateNAVWithDecimals(
+    value: number,
+    decimalPlaces: number
+  ): Promise<TransactionResponse> {
+    console.log(`Nav =: ${value}, decimalPlaces = ${decimalPlaces}`);
+
+    const contract = new ethers.Contract(
+      SMMF_CONTRACT_ADDRESS,
+      MMF_ABI,
+      this.walletAdmin
+    );
+    const tx = await contract.updateNAVWithDecimals(value, decimalPlaces);
+    return tx;
+  }
+  // async updateNAVWithDecimals(
+  //   value: number,
+  //   decimalPlaces: number
+  // ): Promise<TransactionResponse | null> {
+  //   console.log(`Nav =: ${value}, decimalPlaces = ${decimalPlaces}`);
+
+  //   const contract = new ethers.Contract(
+  //     SMMF_CONTRACT_ADDRESS,
+  //     MMF_ABI,
+  //     this.walletAdmin
+  //   );
+
+  //   const currentNAV = await contract.currentNAV();
+  //   console.log(`currentNAV = : ${currentNAV}`);
+
+  //   if (currentNAV == 100000000) {
+  //     console.log(`Nav already initialized..`);
+  //     return null;
+  //   }
+
+  //   const tx = await contract.updateNAVWithDecimals(
+  //     ethers.parseUnits(value.toString(), decimalPlaces),
+  //     decimalPlaces
+  //   );
+  //   return tx;
+  // }
+
+  async resync(): Promise<void> {
     this.smmf_balance = Number(await this.getMMFPrincipal(this.wallet));
     this.smmf_shares = Number(await this.getMMFShare(this.wallet));
-
     console.log(
       `원금 = : ${this.smmf_balance}, 펀드가치 = : ${this.smmf_shares}`
     );
+
+    this.profit1 = await this.profitOf(this.wallet);
+    this.profitRate1 = await this.profitRateOf(this.wallet);
+
     this.skrw_balance = Number(
       await this.getERC20Balance(
         SKRW_CONTRACT_ADDRESS,
@@ -364,6 +433,7 @@ export class MyWallet {
         this.wallet
       )
     );
+
     this.smmf_balance2 = Number(
       await this.getERC20Balance(
         SMMF_CONTRACT_ADDRESS,
@@ -423,6 +493,33 @@ export class MyWallet {
     }
   }
 
+  async getMMFBalance(wallet: Wallet): Promise<string> {
+    try {
+      const contract = new ethers.Contract(
+        SMMF_CONTRACT_ADDRESS,
+        MMF_ABI,
+        this.provider
+      );
+      const [rawBalance, decimals]: [bigint, number] = await Promise.all([
+        contract.balanceOf(wallet.address),
+        contract.decimals(),
+      ]);
+
+      console.log(`rawBalance = : ${rawBalance}, decimals = : ${decimals}`);
+
+      const balance = ethers.formatEther(rawBalance);
+
+      // 사람이 읽을 수 있는 형식으로 변환합니다.
+      return ethers.formatUnits(rawBalance, decimals);
+    } catch (error) {
+      console.error(
+        `[myWallet] Failed to get ERC20 balance for ${SMMF_CONTRACT_ADDRESS}:`,
+        error
+      );
+      return "0.0"; // 오류 발생 시 잔액을 0으로 반환
+    }
+  }
+
   async getMMFShare(wallet: Wallet): Promise<string> {
     try {
       const contract = new ethers.Contract(
@@ -434,6 +531,11 @@ export class MyWallet {
         contract.balanceOf(wallet.address),
         contract.decimals(),
       ]);
+
+      console.log(`rawBalance = : ${rawBalance}, decimals = : ${decimals}`);
+
+      const balance = ethers.formatEther(rawBalance);
+
       // 사람이 읽을 수 있는 형식으로 변환합니다.
       return ethers.formatUnits(rawBalance, decimals);
     } catch (error) {
